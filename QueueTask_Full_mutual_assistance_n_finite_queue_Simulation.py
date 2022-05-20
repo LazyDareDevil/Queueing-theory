@@ -3,7 +3,7 @@ import datetime
 import matplotlib.pyplot as plt
 import numpy as np
 import math 
-from QueueTask_Full_mutual_assistance_n_finite_queue_Assistance import QueueModelParameters
+from QueueTask_Full_mutual_assistance_n_finite_queue_Assistance import QueueModelParameters, RandomTime
 
 
 class QueueModelMarkovProcessWithContinuousTime:
@@ -19,6 +19,7 @@ class QueueModelMarkovProcessWithContinuousTime:
 		self._iteration_index: int = 0
 		self._state: int = 0
 		self._memory.append((self._time, self._state))
+		self._time_generator = RandomTime(self._lambda/(self._n*self._mu))
 
 		# количество поступивших заявок
 		self.count_created_requests = 0
@@ -54,7 +55,8 @@ class QueueModelMarkovProcessWithContinuousTime:
 		self.count_no_queue = 0
 
 	def _random_value(self):
-		return random.random()
+		# return random.random()
+		return self._time_generator.generate()
 
 	def _transition_probability_density(self, i: int, j: int) -> float:
 		if j == i + 1:
@@ -71,12 +73,14 @@ class QueueModelMarkovProcessWithContinuousTime:
 	
 	def _transition_times(self, i: int) -> np.array:
 		times = self._transition_probability_density_vector(i)
+		generated_times = list(self._random_value())
 		shape = times.shape
 		for j in range(shape[0]):
 			if abs(times[j]) < self._precision:
 				times[j] = 1/self._precision
 			else:
-				times[j] = -np.log(self._random_value())/times[j]
+				# times[j] = -np.log(generated_times.pop(0))/times[j]
+				times[j] = generated_times.pop(0)/times[j]
 		return times
 
 	def _next_iteration(self) -> (float, float):
@@ -190,9 +194,9 @@ class Simualtion:
 			self.time_in_service += queue_system.time_in_service
 			self.count_request_rejected += queue_system.count_request_rejected
 			self.count_no_queue += queue_system.count_no_queue
-			counter += 1
 			if (counter % 500 == 0):
 				print("Iteration {}".format(counter))
+			counter += 1
 
 		self.count_all_requests /= repeats
 		self.number_requests_in_service /= repeats

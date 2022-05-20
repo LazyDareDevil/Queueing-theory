@@ -4,6 +4,7 @@ from QueueTask_Full_mutual_assistance_n_finite_queue_Simulation import Simualtio
 import numpy as np
 import matplotlib.pyplot as plt
 
+
 def Draw_Every_State(n: int, m: int, times: np.array, res_analytic: np.array, res_runge_kutta: np.array, res_statistic: np.array):
 	for i in range(0, n+m+1):
 		plt.plot(times, res_statistic[i], color='m')
@@ -15,14 +16,19 @@ def Draw_Every_State(n: int, m: int, times: np.array, res_analytic: np.array, re
 		plt.savefig("S{}.png".format(i))
 		plt.clf()
 
+
 if __name__ == "__main__":
 	repeats = 5000
 	general_time = 10
 	dt = 1e-3
 	
+	# n = 5 		# number of channels
+	# m = 2		# places in queue
+	# lambd = 7 	# income flow rate
+	# mu = 2		# service flow rate
 	n = 5 		# number of channels
 	m = 2		# places in queue
-	lambd = 7 	# income flow rate
+	lambd = 10 	# income flow rate
 	mu = 2		# service flow rate
 	# n = 2 		# number of channels
 	# lambd = 4 	# income flow rate

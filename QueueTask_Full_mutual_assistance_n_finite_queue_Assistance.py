@@ -1,3 +1,11 @@
+import numpy as np
+
+class RandomTime:
+	def __init__(self, lambd: float):
+		self._beta= 1/lambd
+
+	def generate(self) -> np.array:
+		return np.random.exponential(scale=self._beta, size=2)
 
 
 class QueueModelParameters:
